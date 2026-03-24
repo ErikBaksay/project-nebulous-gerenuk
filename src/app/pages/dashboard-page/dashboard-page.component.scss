@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.page-shell {
+  min-height: 100dvh;
+  padding: clamp(1rem, 2vw, 2rem);
+}
+
+.dashboard {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 1.3rem;
+}
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.4rem, 3vw, 2.25rem);
+  border: 1px solid rgba(80, 63, 47, 0.14);
+  border-radius: 40px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.8), transparent 25%),
+    linear-gradient(180deg, rgba(255, 250, 244, 0.92), rgba(244, 236, 226, 0.92));
+  box-shadow: var(--shadow-soft);
+  animation: rise-in 420ms ease;
+}
+
+.hero-card__eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hero-card__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.9fr);
+  gap: 1.5rem;
+}
+
+.hero-card__copy h1 {
+  margin: 0;
+  max-width: 12ch;
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 5.6vw, 5rem);
+  font-weight: 600;
+  letter-spacing: -0.08em;
+  line-height: 0.94;
+}
+
+.hero-card__copy p,
+.hero-card__summary {
+  margin: 1rem 0 0;
+  max-width: 42rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.hero-card__aside {
+  align-self: end;
+  padding: 1rem;
+  border-radius: 28px;
+  border: 1px solid rgba(80, 63, 47, 0.12);
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.hero-card__summary {
+  margin-top: 0;
+}
+
+.hero-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.hero-card__chips span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(80, 63, 47, 0.12);
+  color: var(--text-secondary);
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.3rem;
+}
+
+.tool-grid app-counter-panel {
+  grid-column: 1 / -1;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-card__content,
+  .tool-grid {
+    grid-template-columns: 1fr;
+  }
+}

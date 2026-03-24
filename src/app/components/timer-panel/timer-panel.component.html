@@ -1,0 +1,32 @@
+<section class="tool-card">
+  <header class="tool-card__header">
+    <p class="tool-card__eyebrow">Timer</p>
+    <h2 class="tool-card__title">A quiet stopwatch for deep work.</h2>
+    <p class="tool-card__copy">
+      Start, pause, and reset with sub-second feedback while the state stays fully signal-driven.
+    </p>
+  </header>
+
+  <div class="chip-row">
+    <span class="status-chip" [class.status-chip--running]="isRunning()">{{ timerState() }}</span>
+  </div>
+
+  <div class="tool-display" aria-live="polite">
+    <p class="tool-display__value">{{ displayTime() }}</p>
+    <p class="tool-display__meta">{{ helperText() }}</p>
+  </div>
+
+  <div class="tool-button-row">
+    <button type="button" class="tool-button" (click)="toggleRunning()">
+      {{ isRunning() ? 'Pause timer' : 'Start timer' }}
+    </button>
+    <button
+      type="button"
+      class="tool-button-secondary"
+      [disabled]="elapsedMs() === 0"
+      (click)="reset()"
+    >
+      Reset timer
+    </button>
+  </div>
+</section>

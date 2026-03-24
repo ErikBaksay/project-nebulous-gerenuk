@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.preset-button {
+  min-height: 2.25rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(47, 103, 88, 0.12);
+  border-radius: 999px;
+  background: rgba(236, 244, 241, 0.9);
+  color: var(--accent);
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.preset-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(230, 242, 237, 1);
+  border-color: rgba(47, 103, 88, 0.24);
+}
+
+.preset-button:disabled {
+  color: var(--text-tertiary);
+  background: rgba(245, 241, 236, 0.88);
+  border-color: rgba(80, 63, 47, 0.1);
+}

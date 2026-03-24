@@ -1,0 +1,89 @@
+<section class="tool-card">
+  <header class="tool-card__header">
+    <p class="tool-card__eyebrow">Countdown</p>
+    <h2 class="tool-card__title">Set a finish line and let it run.</h2>
+    <p class="tool-card__copy">
+      Choose a duration, fire it off, and keep the controls tight enough for quick daily use.
+    </p>
+  </header>
+
+  <div class="chip-row">
+    <span class="status-chip" [class.status-chip--warm]="completed()">{{ countdownState() }}</span>
+
+    @for (preset of presets; track preset.label) {
+      <button
+        type="button"
+        class="preset-button"
+        [disabled]="isRunning()"
+        (click)="applyPreset(preset)"
+      >
+        {{ preset.label }}
+      </button>
+    }
+  </div>
+
+  <div class="tool-input-grid">
+    <div class="tool-field">
+      <label for="countdown-hours">Hours</label>
+      <input
+        id="countdown-hours"
+        class="tool-input"
+        type="number"
+        min="0"
+        max="99"
+        inputmode="numeric"
+        [disabled]="isRunning()"
+        [value]="hours()"
+        (input)="setHours($any($event.target).value)"
+      />
+    </div>
+
+    <div class="tool-field">
+      <label for="countdown-minutes">Minutes</label>
+      <input
+        id="countdown-minutes"
+        class="tool-input"
+        type="number"
+        min="0"
+        max="59"
+        inputmode="numeric"
+        [disabled]="isRunning()"
+        [value]="minutes()"
+        (input)="setMinutes($any($event.target).value)"
+      />
+    </div>
+
+    <div class="tool-field">
+      <label for="countdown-seconds">Seconds</label>
+      <input
+        id="countdown-seconds"
+        class="tool-input"
+        type="number"
+        min="0"
+        max="59"
+        inputmode="numeric"
+        [disabled]="isRunning()"
+        [value]="seconds()"
+        (input)="setSeconds($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <div class="tool-display" aria-live="polite">
+    <p class="tool-display__value">{{ displayTime() }}</p>
+    <p class="tool-display__meta">{{ helperText() }}</p>
+  </div>
+
+  <div class="tool-button-row">
+    <button
+      type="button"
+      class="tool-button"
+      [disabled]="!isRunning() && configuredDurationMs() === 0"
+      (click)="toggleRunning()"
+    >
+      {{ isRunning() ? 'Pause countdown' : 'Start countdown' }}
+    </button>
+
+    <button type="button" class="tool-button-secondary" (click)="reset()">Reset countdown</button>
+  </div>
+</section>

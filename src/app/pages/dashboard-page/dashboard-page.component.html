@@ -1,0 +1,31 @@
+<div class="page-shell">
+  <main class="dashboard">
+    <section class="hero-card">
+      <p class="hero-card__eyebrow">Private utility workspace</p>
+      <div class="hero-card__content">
+        <div class="hero-card__copy">
+          <h1>{{ projectName() }}</h1>
+          <p>
+            A quiet first build for your future tools hub. Counter, timer, and countdown are ready
+            now, with the same calm editorial feel carried across the whole page.
+          </p>
+        </div>
+
+        <aside class="hero-card__aside">
+          <p class="hero-card__summary">{{ heroSummary() }}</p>
+          <div class="hero-card__chips">
+            @for (tool of toolNames(); track tool) {
+              <span>{{ tool }}</span>
+            }
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="tool-grid" aria-label="Utility tools">
+      <app-timer-panel />
+      <app-countdown-panel />
+      <app-counter-panel class="tool-grid__wide" />
+    </section>
+  </main>
+</div>

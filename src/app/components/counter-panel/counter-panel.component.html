@@ -1,0 +1,40 @@
+<section class="tool-card">
+  <header class="tool-card__header">
+    <p class="tool-card__eyebrow">Counter</p>
+    <h2 class="tool-card__title">Precise steps, no clutter.</h2>
+    <p class="tool-card__copy">
+      A calm incremental counter for quick tallies, running totals, and anything that benefits from
+      fixed jumps.
+    </p>
+  </header>
+
+  <div class="tool-display">
+    <p class="tool-display__value">{{ formattedCount() }}</p>
+    <p class="tool-display__meta">{{ countSummary() }}</p>
+  </div>
+
+  <div class="adjustment-grid" role="group" aria-label="Counter adjustments">
+    @for (step of adjustmentSteps; track step) {
+      <button
+        type="button"
+        class="adjustment-button"
+        [class.adjustment-button--positive]="step > 0"
+        [attr.aria-label]="ariaLabelForStep(step)"
+        (click)="adjust(step)"
+      >
+        {{ step > 0 ? '+' : '' }}{{ step }}
+      </button>
+    }
+  </div>
+
+  <div class="tool-button-row">
+    <button
+      type="button"
+      class="tool-button-secondary"
+      [disabled]="count() === 0"
+      (click)="reset()"
+    >
+      Reset counter
+    </button>
+  </div>
+</section>
