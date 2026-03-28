@@ -1,17 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
-  buildDurationMs,
-  coerceDurationPart,
-  formatDigitalDuration,
-  formatHumanDuration,
-} from '../../shared/time-utils';
-
-type CountdownPreset = {
-  readonly label: string;
-  readonly hours: number;
-  readonly minutes: number;
-  readonly seconds: number;
-};
+  CountdownPreset,
+  CountdownStateService,
+} from '../../services/countdown-state.service';
+import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
 
 @Component({
   selector: 'app-countdown-panel',
@@ -19,178 +11,76 @@ type CountdownPreset = {
   styleUrl: './countdown-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CountdownPanelComponent implements OnDestroy {
-  private intervalId: ReturnType<typeof setInterval> | null = null;
-  private readonly startedAtMs = signal<number | null>(null);
-  private readonly remainingAtStartMs = signal(buildDurationMs(0, 5, 0));
-  private readonly nowMs = signal(Date.now());
+export class CountdownPanelComponent {
+  private readonly countdownStateService = inject(CountdownStateService);
+  private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
-  protected readonly presets: CountdownPreset[] = [
-    { label: '1 min', hours: 0, minutes: 1, seconds: 0 },
-    { label: '5 min', hours: 0, minutes: 5, seconds: 0 },
-    { label: '15 min', hours: 0, minutes: 15, seconds: 0 },
-  ];
-
-  protected readonly hours = signal(0);
-  protected readonly minutes = signal(5);
-  protected readonly seconds = signal(0);
-  protected readonly completed = signal(false);
-
-  protected readonly configuredDurationMs = computed(() =>
-    buildDurationMs(this.hours(), this.minutes(), this.seconds()),
-  );
-  protected readonly isRunning = computed(() => this.startedAtMs() !== null);
-  protected readonly remainingMs = computed(() => {
-    const startedAtMs = this.startedAtMs();
-
-    if (startedAtMs === null) {
-      return this.remainingAtStartMs();
-    }
-
-    return Math.max(0, this.remainingAtStartMs() - (this.nowMs() - startedAtMs));
-  });
-  protected readonly displayTime = computed(() => formatDigitalDuration(this.remainingMs()));
-  protected readonly countdownState = computed(() => {
-    if (this.completed()) {
-      return 'Complete';
-    }
-
-    if (this.isRunning()) {
-      return 'Running';
-    }
-
-    if (this.remainingMs() !== this.configuredDurationMs()) {
-      return 'Paused';
-    }
-
-    return this.configuredDurationMs() === 0 ? 'Add time' : 'Ready';
-  });
-  protected readonly helperText = computed(() => {
-    if (this.completed()) {
-      return 'Countdown finished. Start again or reset to your saved duration.';
-    }
-
-    if (this.configuredDurationMs() === 0) {
-      return 'Set hours, minutes, or seconds before starting.';
-    }
-
-    return `Configured for ${formatHumanDuration(this.configuredDurationMs())}.`;
-  });
-
-  ngOnDestroy(): void {
-    this.stopTicker();
-  }
+  protected readonly floatingMessage = signal<string | null>(null);
+  protected readonly presets = this.countdownStateService.presets;
+  protected readonly hours = this.countdownStateService.hours;
+  protected readonly minutes = this.countdownStateService.minutes;
+  protected readonly seconds = this.countdownStateService.seconds;
+  protected readonly completed = this.countdownStateService.completed;
+  protected readonly configuredDurationMs = this.countdownStateService.configuredDurationMs;
+  protected readonly isRunning = this.countdownStateService.isRunning;
+  protected readonly remainingMs = this.countdownStateService.remainingMs;
+  protected readonly displayTime = this.countdownStateService.displayTime;
+  protected readonly countdownState = this.countdownStateService.countdownState;
+  protected readonly helperText = this.countdownStateService.helperText;
+  protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
 
   protected setHours(value: string): void {
-    this.hours.set(coerceDurationPart(value, 99));
-    this.syncDurationFromInputs();
+    this.countdownStateService.setHours(value);
   }
 
   protected setMinutes(value: string): void {
-    this.minutes.set(coerceDurationPart(value, 59));
-    this.syncDurationFromInputs();
+    this.countdownStateService.setMinutes(value);
   }
 
   protected setSeconds(value: string): void {
-    this.seconds.set(coerceDurationPart(value, 59));
-    this.syncDurationFromInputs();
+    this.countdownStateService.setSeconds(value);
   }
 
   protected applyPreset(preset: CountdownPreset): void {
-    if (this.isRunning()) {
-      return;
-    }
-
-    this.hours.set(preset.hours);
-    this.minutes.set(preset.minutes);
-    this.seconds.set(preset.seconds);
-    this.syncDurationFromInputs();
+    this.countdownStateService.applyPreset(preset);
   }
 
   protected start(): void {
-    if (this.isRunning()) {
-      return;
-    }
-
-    const initialRemaining =
-      this.remainingMs() > 0 ? this.remainingMs() : this.configuredDurationMs();
-
-    if (initialRemaining === 0) {
-      return;
-    }
-
-    const timestamp = Date.now();
-    this.nowMs.set(timestamp);
-    this.remainingAtStartMs.set(initialRemaining);
-    this.startedAtMs.set(timestamp);
-    this.completed.set(false);
-    this.startTicker();
+    this.countdownStateService.start();
   }
 
   protected pause(): void {
-    if (!this.isRunning()) {
-      return;
-    }
-
-    this.nowMs.set(Date.now());
-    this.remainingAtStartMs.set(this.remainingMs());
-    this.startedAtMs.set(null);
-    this.stopTicker();
+    this.countdownStateService.pause();
   }
 
   protected reset(): void {
-    this.stopTicker();
-    this.startedAtMs.set(null);
-    this.completed.set(false);
-    this.nowMs.set(Date.now());
-    this.remainingAtStartMs.set(this.configuredDurationMs());
+    this.countdownStateService.reset();
   }
 
   protected toggleRunning(): void {
-    if (this.isRunning()) {
-      this.pause();
-      return;
-    }
-
-    this.start();
+    this.countdownStateService.toggleRunning();
   }
 
-  private syncDurationFromInputs(): void {
-    if (this.isRunning()) {
-      return;
-    }
-
-    this.completed.set(false);
-    this.remainingAtStartMs.set(this.configuredDurationMs());
+  protected openFloatingWindow(): void {
+    void this.openFloatingWindowInternal();
   }
 
-  private startTicker(): void {
-    if (this.intervalId !== null) {
-      return;
-    }
+  private async openFloatingWindowInternal(): Promise<void> {
+    const result = await this.floatingToolWindowService.openTool('countdown');
 
-    this.intervalId = setInterval(() => {
-      this.nowMs.set(Date.now());
-
-      if (this.remainingMs() === 0) {
-        this.finish();
-      }
-    }, 100);
+    this.floatingMessage.set(getFloatingMessage(result.status));
   }
+}
 
-  private stopTicker(): void {
-    if (this.intervalId === null) {
-      return;
-    }
-
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-  }
-
-  private finish(): void {
-    this.stopTicker();
-    this.startedAtMs.set(null);
-    this.completed.set(true);
-    this.remainingAtStartMs.set(0);
+function getFloatingMessage(status: 'opened' | 'unsupported' | 'blocked' | 'failed'): string | null {
+  switch (status) {
+    case 'opened':
+      return null;
+    case 'unsupported':
+      return 'Always-on-top floating windows need a Chromium browser with Document Picture-in-Picture support.';
+    case 'blocked':
+      return 'The browser blocked the floating window request. Try the button again directly from the page.';
+    case 'failed':
+      return 'The floating window could not be opened this time.';
   }
 }

@@ -4,6 +4,7 @@ import { TimerPanelComponent } from './timer-panel.component';
 
 describe('TimerPanelComponent', () => {
   beforeEach(async () => {
+    localStorage.clear();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-23T12:00:00Z'));
 
@@ -14,6 +15,7 @@ describe('TimerPanelComponent', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    localStorage.clear();
   });
 
   it('tracks elapsed time and preserves it when paused', async () => {

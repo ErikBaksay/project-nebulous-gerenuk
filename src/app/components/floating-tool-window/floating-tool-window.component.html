@@ -1,0 +1,93 @@
+<section class="tool-card floating-tool-card">
+  <header class="tool-card__header floating-tool-card__header">
+    <div class="floating-tool-card__intro">
+      <div class="floating-tool-card__topline">
+        <p class="tool-card__eyebrow">{{ tool().label }}</p>
+        <span class="floating-tool-card__badge">On top</span>
+      </div>
+
+      <h2 class="floating-tool-card__title">{{ title() }}</h2>
+      <p class="floating-tool-card__caption">All setup stays on the dashboard.</p>
+    </div>
+
+    <button type="button" class="tool-ghost-button floating-tool-card__close" (click)="closeWindow()">
+      Close
+    </button>
+  </header>
+
+  @switch (toolId()) {
+    @case ('timer') {
+      <div class="chip-row floating-tool-card__status-row">
+        <span class="status-chip" [class.status-chip--running]="timerIsRunning()">
+          {{ timerState() }}
+        </span>
+      </div>
+
+      <div class="tool-display floating-tool-card__display" aria-live="polite">
+        <p class="tool-display__value floating-tool-card__value">{{ timerDisplayTime() }}</p>
+        <p class="tool-display__meta">{{ timerMeta() }}</p>
+      </div>
+
+      <div class="tool-button-row floating-tool-card__actions">
+        <button type="button" class="tool-button" (click)="toggleTimer()">
+          {{ timerIsRunning() ? 'Pause' : 'Start' }}
+        </button>
+        <button
+          type="button"
+          class="tool-button-secondary"
+          [disabled]="timerElapsedMs() === 0"
+          (click)="resetTimer()"
+        >
+          Restart
+        </button>
+      </div>
+    }
+
+    @case ('countdown') {
+      <div class="chip-row floating-tool-card__status-row">
+        <span class="status-chip" [class.status-chip--warm]="countdownState() === 'Complete'">
+          {{ countdownState() }}
+        </span>
+      </div>
+
+      <div class="tool-display floating-tool-card__display" aria-live="polite">
+        <p class="tool-display__value floating-tool-card__value">{{ countdownDisplayTime() }}</p>
+        <p class="tool-display__meta">{{ countdownMeta() }}</p>
+      </div>
+
+      <div class="tool-button-row floating-tool-card__actions">
+        <button
+          type="button"
+          class="tool-button"
+          [disabled]="!countdownIsRunning() && countdownConfiguredDurationMs() === 0"
+          (click)="toggleCountdown()"
+        >
+          {{ countdownIsRunning() ? 'Pause' : 'Start' }}
+        </button>
+        <button type="button" class="tool-button-secondary" (click)="resetCountdown()">
+          Restart
+        </button>
+      </div>
+    }
+
+    @case ('counter') {
+      <div class="tool-display floating-tool-card__display">
+        <p class="tool-display__value floating-tool-card__value">{{ counterCount() }}</p>
+        <p class="tool-display__meta">{{ counterMeta() }}</p>
+      </div>
+
+      <div class="tool-button-row floating-tool-card__actions floating-tool-card__actions--compact">
+        <button type="button" class="tool-button-secondary" (click)="adjustCounter(-1)">-1</button>
+        <button
+          type="button"
+          class="tool-button-secondary"
+          [disabled]="counterValue() === 0"
+          (click)="resetCounter()"
+        >
+          Reset
+        </button>
+        <button type="button" class="tool-button" (click)="adjustCounter(1)">+1</button>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.floating-tool-card {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  min-height: calc(100dvh - 1.4rem);
+  padding: 1rem;
+  border-radius: 30px;
+  animation: floating-monitor-enter 220ms ease;
+}
+
+.floating-tool-card__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.85rem;
+}
+
+.floating-tool-card__intro {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.floating-tool-card__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.floating-tool-card__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.4rem 0.78rem;
+  border-radius: 999px;
+  border: 1px solid rgba(47, 103, 88, 0.12);
+  background: rgba(236, 244, 241, 0.9);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.floating-tool-card__title,
+.floating-tool-card__caption {
+  margin: 0;
+}
+
+.floating-tool-card__title {
+  max-width: 12ch;
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 8vw, 2.05rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.floating-tool-card__caption {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.floating-tool-card__close {
+  justify-self: end;
+  align-self: start;
+  min-height: 2.1rem;
+}
+
+.floating-tool-card__status-row {
+  gap: 0.65rem;
+}
+
+.floating-tool-card__display {
+  gap: 0.45rem;
+  padding: 1rem 1.05rem;
+}
+
+.floating-tool-card__value {
+  font-size: clamp(3rem, 15vw, 4.3rem);
+}
+
+.floating-tool-card__actions {
+  margin-top: auto;
+}
+
+.floating-tool-card__actions > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.floating-tool-card__actions--compact > * {
+  flex: 1 1 0;
+}
+
+@keyframes floating-monitor-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 360px) {
+  .floating-tool-card__header {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-tool-card__close {
+    justify-self: start;
+  }
+}

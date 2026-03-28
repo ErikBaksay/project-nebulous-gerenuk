@@ -13,6 +13,9 @@ import { TimerPanelComponent } from '../../components/timer-panel/timer-panel.co
 export class DashboardPageComponent {
   protected readonly projectName = signal('Project Nebulous Gerenuk');
   protected readonly toolNames = signal(['Counter', 'Timer', 'Countdown']);
+  protected readonly workspaceNote = signal(
+    'Float any tool into a compact always-on-top monitor while all setup stays here on the page.',
+  );
   protected readonly heroSummary = computed(
     () =>
       `${this.toolNames().length} focused utilities with a warm, minimal surface built for your private dashboard.`,

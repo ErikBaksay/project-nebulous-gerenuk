@@ -1,6 +1,13 @@
 <section class="tool-card">
   <header class="tool-card__header">
-    <p class="tool-card__eyebrow">Timer</p>
+    <div class="tool-card__topline">
+      <p class="tool-card__eyebrow">Timer</p>
+
+      <button type="button" class="tool-ghost-button" (click)="openFloatingWindow()">
+        {{ activeFloatingToolId() === 'timer' ? 'On top' : 'Float on top' }}
+      </button>
+    </div>
+
     <h2 class="tool-card__title">A quiet stopwatch for deep work.</h2>
     <p class="tool-card__copy">
       Start, pause, and reset with sub-second feedback while the state stays fully signal-driven.
@@ -29,4 +36,8 @@
       Reset timer
     </button>
   </div>
+
+  @if (floatingMessage(); as message) {
+    <p class="tool-inline-note">{{ message }}</p>
+  }
 </section>

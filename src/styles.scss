@@ -47,6 +47,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.floating-tool-window-body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 34%),
+    linear-gradient(180deg, rgba(246, 238, 228, 0.98), rgba(236, 227, 215, 0.98));
+}
+
+.floating-tool-window-host {
+  display: block;
+  min-height: 100dvh;
+  padding: 0.7rem;
+}
+
 button,
 input {
   font: inherit;
@@ -81,6 +95,13 @@ button:disabled {
   gap: 0.55rem;
 }
 
+.tool-card__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .tool-card__eyebrow {
   margin: 0;
   font-size: 0.72rem;
@@ -104,6 +125,34 @@ button:disabled {
   max-width: 38rem;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+
+.tool-ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.tool-ghost-button {
+  border: 1px solid rgba(80, 63, 47, 0.12);
+  background: rgba(255, 255, 255, 0.64);
+  color: var(--text-primary);
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.tool-ghost-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(80, 63, 47, 0.22);
 }
 
 .tool-display {
@@ -195,6 +244,7 @@ button:disabled {
 
 .tool-button:focus-visible,
 .tool-button-secondary:focus-visible,
+.tool-ghost-button:focus-visible,
 .tool-input:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--accent) 70%, white);
   outline-offset: 2px;
@@ -254,12 +304,20 @@ button:disabled {
   color: var(--text-secondary);
 }
 
+.tool-inline-note {
+  margin: -0.35rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 @media (max-width: 640px) {
   .tool-input-grid {
     grid-template-columns: 1fr;
   }
 
-  .tool-card {
-    border-radius: 26px;
+  .tool-card__topline {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

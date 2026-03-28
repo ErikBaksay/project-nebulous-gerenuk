@@ -3,6 +3,8 @@ import { CounterPanelComponent } from './counter-panel.component';
 
 describe('CounterPanelComponent', () => {
   beforeEach(async () => {
+    localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [CounterPanelComponent],
     }).compileComponents();

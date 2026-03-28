@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-
-const COUNT_FORMATTER = new Intl.NumberFormat('en-US');
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { CounterStateService } from '../../services/counter-state.service';
+import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
 
 @Component({
   selector: 'app-counter-panel',
@@ -9,25 +9,18 @@ const COUNT_FORMATTER = new Intl.NumberFormat('en-US');
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CounterPanelComponent {
-  protected readonly adjustmentSteps = [-100, -10, -1, 1, 10, 100];
-  protected readonly count = signal(0);
-  protected readonly formattedCount = computed(() => COUNT_FORMATTER.format(this.count()));
-  protected readonly countSummary = computed(() => {
-    const value = this.count();
+  private readonly counterState = inject(CounterStateService);
+  private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
-    if (value === 0) {
-      return 'Centered and ready for the next move.';
-    }
-
-    const absoluteValue = COUNT_FORMATTER.format(Math.abs(value));
-
-    return value > 0
-      ? `${absoluteValue} above zero and climbing.`
-      : `${absoluteValue} below zero and heading back.`;
-  });
+  protected readonly floatingMessage = signal<string | null>(null);
+  protected readonly adjustmentSteps = this.counterState.adjustmentSteps;
+  protected readonly count = this.counterState.count;
+  protected readonly formattedCount = this.counterState.formattedCount;
+  protected readonly countSummary = this.counterState.countSummary;
+  protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
 
   protected adjust(amount: number): void {
-    this.count.update((currentValue) => currentValue + amount);
+    this.counterState.adjust(amount);
   }
 
   protected ariaLabelForStep(step: number): string {
@@ -35,6 +28,29 @@ export class CounterPanelComponent {
   }
 
   protected reset(): void {
-    this.count.set(0);
+    this.counterState.reset();
+  }
+
+  protected openFloatingWindow(): void {
+    void this.openFloatingWindowInternal();
+  }
+
+  private async openFloatingWindowInternal(): Promise<void> {
+    const result = await this.floatingToolWindowService.openTool('counter');
+
+    this.floatingMessage.set(getFloatingMessage(result.status));
+  }
+}
+
+function getFloatingMessage(status: 'opened' | 'unsupported' | 'blocked' | 'failed'): string | null {
+  switch (status) {
+    case 'opened':
+      return null;
+    case 'unsupported':
+      return 'Always-on-top floating windows need a Chromium browser with Document Picture-in-Picture support.';
+    case 'blocked':
+      return 'The browser blocked the floating window request. Try the button again directly from the page.';
+    case 'failed':
+      return 'The floating window could not be opened this time.';
   }
 }

@@ -4,6 +4,7 @@ import { CountdownPanelComponent } from './countdown-panel.component';
 
 describe('CountdownPanelComponent', () => {
   beforeEach(async () => {
+    localStorage.clear();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-23T12:00:00Z'));
 
@@ -14,6 +15,7 @@ describe('CountdownPanelComponent', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    localStorage.clear();
   });
 
   it('finishes a short countdown and marks it complete', async () => {

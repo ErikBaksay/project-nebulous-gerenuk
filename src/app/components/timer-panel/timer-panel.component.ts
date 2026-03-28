@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, signal } from '@angular/core';
-import { formatDigitalDuration, formatHumanDuration } from '../../shared/time-utils';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
+import { TimerStateService } from '../../services/timer-state.service';
 
 @Component({
   selector: 'app-timer-panel',
@@ -7,95 +8,54 @@ import { formatDigitalDuration, formatHumanDuration } from '../../shared/time-ut
   styleUrl: './timer-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimerPanelComponent implements OnDestroy {
-  private intervalId: ReturnType<typeof setInterval> | null = null;
-  private readonly startedAtMs = signal<number | null>(null);
-  private readonly elapsedBeforeStartMs = signal(0);
-  private readonly nowMs = signal(Date.now());
+export class TimerPanelComponent {
+  private readonly timerStateService = inject(TimerStateService);
+  private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
-  protected readonly isRunning = computed(() => this.startedAtMs() !== null);
-  protected readonly elapsedMs = computed(() => {
-    const startedAtMs = this.startedAtMs();
-
-    if (startedAtMs === null) {
-      return this.elapsedBeforeStartMs();
-    }
-
-    return this.elapsedBeforeStartMs() + (this.nowMs() - startedAtMs);
-  });
-  protected readonly displayTime = computed(() => formatDigitalDuration(this.elapsedMs()));
-  protected readonly timerState = computed(() => {
-    if (this.isRunning()) {
-      return 'Running';
-    }
-
-    return this.elapsedMs() > 0 ? 'Paused' : 'Ready';
-  });
-  protected readonly helperText = computed(() => {
-    if (this.elapsedMs() === 0) {
-      return 'Use it like a stopwatch for focused work or quick checks.';
-    }
-
-    return `Elapsed for ${formatHumanDuration(this.elapsedMs())}.`;
-  });
-
-  ngOnDestroy(): void {
-    this.stopTicker();
-  }
+  protected readonly floatingMessage = signal<string | null>(null);
+  protected readonly isRunning = this.timerStateService.isRunning;
+  protected readonly elapsedMs = this.timerStateService.elapsedMs;
+  protected readonly displayTime = this.timerStateService.displayTime;
+  protected readonly timerState = this.timerStateService.timerState;
+  protected readonly helperText = this.timerStateService.helperText;
+  protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
 
   protected start(): void {
-    if (this.isRunning()) {
-      return;
-    }
-
-    const timestamp = Date.now();
-    this.nowMs.set(timestamp);
-    this.startedAtMs.set(timestamp);
-    this.startTicker();
+    this.timerStateService.start();
   }
 
   protected pause(): void {
-    if (!this.isRunning()) {
-      return;
-    }
-
-    this.nowMs.set(Date.now());
-    this.elapsedBeforeStartMs.set(this.elapsedMs());
-    this.startedAtMs.set(null);
-    this.stopTicker();
+    this.timerStateService.pause();
   }
 
   protected reset(): void {
-    this.pause();
-    this.elapsedBeforeStartMs.set(0);
-    this.nowMs.set(Date.now());
+    this.timerStateService.reset();
   }
 
   protected toggleRunning(): void {
-    if (this.isRunning()) {
-      this.pause();
-      return;
-    }
-
-    this.start();
+    this.timerStateService.toggleRunning();
   }
 
-  private startTicker(): void {
-    if (this.intervalId !== null) {
-      return;
-    }
-
-    this.intervalId = setInterval(() => {
-      this.nowMs.set(Date.now());
-    }, 100);
+  protected openFloatingWindow(): void {
+    void this.openFloatingWindowInternal();
   }
 
-  private stopTicker(): void {
-    if (this.intervalId === null) {
-      return;
-    }
+  private async openFloatingWindowInternal(): Promise<void> {
+    const result = await this.floatingToolWindowService.openTool('timer');
 
-    clearInterval(this.intervalId);
-    this.intervalId = null;
+    this.floatingMessage.set(getFloatingMessage(result.status));
+  }
+}
+
+function getFloatingMessage(status: 'opened' | 'unsupported' | 'blocked' | 'failed'): string | null {
+  switch (status) {
+    case 'opened':
+      return null;
+    case 'unsupported':
+      return 'Always-on-top floating windows need a Chromium browser with Document Picture-in-Picture support.';
+    case 'blocked':
+      return 'The browser blocked the floating window request. Try the button again directly from the page.';
+    case 'failed':
+      return 'The floating window could not be opened this time.';
   }
 }

@@ -3,6 +3,8 @@ import { DashboardPageComponent } from './dashboard-page.component';
 
 describe('DashboardPageComponent', () => {
   beforeEach(async () => {
+    localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [DashboardPageComponent],
     }).compileComponents();
