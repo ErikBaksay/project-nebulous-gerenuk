@@ -32,6 +32,12 @@ type PictureInPictureCapableWindow = Window &
     documentPictureInPicture?: DocumentPictureInPictureController;
   };
 
+type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: {
+    mobile?: boolean;
+  };
+};
+
 @Injectable({ providedIn: 'root' })
 export class FloatingToolWindowService {
   private readonly applicationRef = inject(ApplicationRef);
@@ -96,12 +102,18 @@ export class FloatingToolWindowService {
     }
 
     const browserWindow = window as PictureInPictureCapableWindow;
+    const controller = browserWindow.documentPictureInPicture;
 
-    if (!window.isSecureContext || browserWindow.documentPictureInPicture === undefined) {
+    if (
+      !window.isSecureContext ||
+      controller === undefined ||
+      typeof controller.requestWindow !== 'function' ||
+      isProbablyMobileBrowser(navigator as NavigatorWithUserAgentData)
+    ) {
       return null;
     }
 
-    return browserWindow.documentPictureInPicture;
+    return controller;
   }
 
   private prepareFloatingWindow(floatingWindow: Window): void {
@@ -195,4 +207,14 @@ export class FloatingToolWindowService {
 
 function isDomExceptionNamed(error: unknown, name: string): boolean {
   return error instanceof DOMException && error.name === name;
+}
+
+function isProbablyMobileBrowser(navigatorObject: NavigatorWithUserAgentData): boolean {
+  if (navigatorObject.userAgentData?.mobile !== undefined) {
+    return navigatorObject.userAgentData.mobile;
+  }
+
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigatorObject.userAgent
+  );
 }

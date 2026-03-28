@@ -5,16 +5,25 @@ import { FloatingToolWindowService } from './floating-tool-window.service';
 describe('FloatingToolWindowService', () => {
   let originalPictureInPicture: unknown;
   let originalSecureContextDescriptor: PropertyDescriptor | undefined;
+  let originalUserAgentDataDescriptor: PropertyDescriptor | undefined;
 
   beforeEach(() => {
     originalPictureInPicture = (
       window as Window & { documentPictureInPicture?: unknown }
     ).documentPictureInPicture;
     originalSecureContextDescriptor = Object.getOwnPropertyDescriptor(window, 'isSecureContext');
+    originalUserAgentDataDescriptor = Object.getOwnPropertyDescriptor(navigator, 'userAgentData');
 
     Object.defineProperty(window, 'isSecureContext', {
       configurable: true,
       value: true,
+    });
+
+    Object.defineProperty(navigator, 'userAgentData', {
+      configurable: true,
+      value: {
+        mobile: false,
+      },
     });
 
     TestBed.configureTestingModule({});
@@ -28,6 +37,12 @@ describe('FloatingToolWindowService', () => {
 
     if (originalSecureContextDescriptor !== undefined) {
       Object.defineProperty(window, 'isSecureContext', originalSecureContextDescriptor);
+    }
+
+    if (originalUserAgentDataDescriptor !== undefined) {
+      Object.defineProperty(navigator, 'userAgentData', originalUserAgentDataDescriptor);
+    } else {
+      Reflect.deleteProperty(navigator, 'userAgentData');
     }
   });
 
@@ -64,5 +79,25 @@ describe('FloatingToolWindowService', () => {
     expect(floatingDocument.body.textContent).toContain('Timer');
     expect(floatingDocument.body.textContent).toContain('Start');
     expect(focus).toHaveBeenCalledOnce();
+  });
+
+  it('treats mobile browsers as unsupported for floating monitors', () => {
+    Object.defineProperty(window, 'documentPictureInPicture', {
+      configurable: true,
+      value: {
+        requestWindow: vi.fn(),
+      },
+    });
+
+    Object.defineProperty(navigator, 'userAgentData', {
+      configurable: true,
+      value: {
+        mobile: true,
+      },
+    });
+
+    const service = TestBed.inject(FloatingToolWindowService);
+
+    expect(service.supported()).toBe(false);
   });
 });

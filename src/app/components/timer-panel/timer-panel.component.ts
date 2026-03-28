@@ -23,6 +23,7 @@ export class TimerPanelComponent {
   protected readonly timerState = this.timerStateService.timerState;
   protected readonly helperText = this.timerStateService.helperText;
   protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
+  protected readonly floatingSupported = this.floatingToolWindowService.supported;
 
   protected start(): void {
     this.timerStateService.start();

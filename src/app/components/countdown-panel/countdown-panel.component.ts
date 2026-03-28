@@ -32,6 +32,7 @@ export class CountdownPanelComponent {
   protected readonly countdownState = this.countdownStateService.countdownState;
   protected readonly helperText = this.countdownStateService.helperText;
   protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
+  protected readonly floatingSupported = this.floatingToolWindowService.supported;
 
   protected setHours(value: string): void {
     this.countdownStateService.setHours(value);

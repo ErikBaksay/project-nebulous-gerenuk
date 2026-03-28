@@ -22,6 +22,7 @@ export class CounterPanelComponent {
   protected readonly formattedCount = this.counterState.formattedCount;
   protected readonly countSummary = this.counterState.countSummary;
   protected readonly activeFloatingToolId = this.floatingToolWindowService.activeToolId;
+  protected readonly floatingSupported = this.floatingToolWindowService.supported;
 
   protected adjust(amount: number): void {
     this.counterState.adjust(amount);

@@ -9,9 +9,11 @@
             Fullscreen
           </button>
 
-          <button type="button" class="tool-ghost-button" (click)="openFloatingWindow()">
-            {{ activeFloatingToolId() === 'countdown' ? 'On top' : 'Float on top' }}
-          </button>
+          @if (floatingSupported()) {
+            <button type="button" class="tool-ghost-button" (click)="openFloatingWindow()">
+              {{ activeFloatingToolId() === 'countdown' ? 'On top' : 'Float on top' }}
+            </button>
+          }
         </div>
       }
     </div>
