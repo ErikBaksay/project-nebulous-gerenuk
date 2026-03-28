@@ -1,0 +1,38 @@
+<div
+  class="fullscreen-tool-overlay"
+  [class.fullscreen-tool-overlay--active]="activeToolId() !== null"
+  [attr.aria-hidden]="activeToolId() === null"
+>
+  @if (tool(); as tool) {
+    <div class="fullscreen-tool-overlay__shell" role="dialog" aria-modal="true">
+      <div class="fullscreen-tool-overlay__chrome">
+        <div class="fullscreen-tool-overlay__intro">
+          <p class="tool-card__eyebrow">{{ modeLabel() }}</p>
+          <div class="fullscreen-tool-overlay__chips">
+            <span>{{ tool.label }}</span>
+          </div>
+        </div>
+
+        <button type="button" class="tool-ghost-button" (click)="close()">
+          {{ isFullscreen() ? 'Exit Fullscreen' : 'Close Focus' }}
+        </button>
+      </div>
+
+      <div class="fullscreen-tool-overlay__stage">
+        <div class="fullscreen-tool-overlay__panel" [style.max-width.px]="tool.focusWidth">
+          @switch (tool.id) {
+            @case ('timer') {
+              <app-timer-panel viewMode="focus" />
+            }
+            @case ('countdown') {
+              <app-countdown-panel viewMode="focus" />
+            }
+            @case ('counter') {
+              <app-counter-panel viewMode="focus" />
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

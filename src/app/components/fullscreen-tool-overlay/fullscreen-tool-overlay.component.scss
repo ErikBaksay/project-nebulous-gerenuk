@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+.fullscreen-tool-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: clamp(1rem, 2.4vw, 2rem);
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.82), transparent 34%),
+    radial-gradient(circle at top right, rgba(231, 219, 205, 0.92), transparent 26%),
+    linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-strong) 100%);
+}
+
+.fullscreen-tool-overlay--active {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.fullscreen-tool-overlay__shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  min-height: 100%;
+}
+
+.fullscreen-tool-overlay__chrome {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fullscreen-tool-overlay__intro {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.fullscreen-tool-overlay__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.fullscreen-tool-overlay__chips span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(80, 63, 47, 0.12);
+  color: var(--text-secondary);
+}
+
+.fullscreen-tool-overlay__stage {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  min-height: 0;
+}
+
+.fullscreen-tool-overlay__panel {
+  width: min(100%, 100%);
+}
+
+.fullscreen-tool-overlay__panel > * {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .fullscreen-tool-overlay__chrome {
+    flex-direction: column;
+  }
+}

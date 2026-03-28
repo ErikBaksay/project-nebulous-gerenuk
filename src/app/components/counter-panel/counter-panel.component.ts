@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { CounterStateService } from '../../services/counter-state.service';
+import { FullscreenToolViewService } from '../../services/fullscreen-tool-view.service';
 import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
+import { ToolPanelViewMode } from '../../shared/tool.types';
 
 @Component({
   selector: 'app-counter-panel',
@@ -10,8 +12,10 @@ import { FloatingToolWindowService } from '../../services/floating-tool-window.s
 })
 export class CounterPanelComponent {
   private readonly counterState = inject(CounterStateService);
+  private readonly fullscreenToolViewService = inject(FullscreenToolViewService);
   private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
+  readonly viewMode = input<ToolPanelViewMode>('dashboard');
   protected readonly floatingMessage = signal<string | null>(null);
   protected readonly adjustmentSteps = this.counterState.adjustmentSteps;
   protected readonly count = this.counterState.count;
@@ -29,6 +33,10 @@ export class CounterPanelComponent {
 
   protected reset(): void {
     this.counterState.reset();
+  }
+
+  protected openFullscreenMode(): void {
+    void this.fullscreenToolViewService.openTool('counter');
   }
 
   protected openFloatingWindow(): void {

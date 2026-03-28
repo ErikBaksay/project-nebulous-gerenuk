@@ -3,9 +3,17 @@
     <div class="tool-card__topline">
       <p class="tool-card__eyebrow">Counter</p>
 
-      <button type="button" class="tool-ghost-button" (click)="openFloatingWindow()">
-        {{ activeFloatingToolId() === 'counter' ? 'On top' : 'Float on top' }}
-      </button>
+      @if (viewMode() === 'dashboard') {
+        <div class="tool-card__header-actions">
+          <button type="button" class="tool-ghost-button" (click)="openFullscreenMode()">
+            Fullscreen
+          </button>
+
+          <button type="button" class="tool-ghost-button" (click)="openFloatingWindow()">
+            {{ activeFloatingToolId() === 'counter' ? 'On top' : 'Float on top' }}
+          </button>
+        </div>
+      }
     </div>
 
     <h2 class="tool-card__title">Precise steps, no clutter.</h2>
@@ -45,7 +53,7 @@
     </button>
   </div>
 
-  @if (floatingMessage(); as message) {
+  @if (viewMode() === 'dashboard' && floatingMessage(); as message) {
     <p class="tool-inline-note">{{ message }}</p>
   }
 </section>

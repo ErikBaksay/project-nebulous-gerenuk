@@ -34,6 +34,12 @@ html {
   scroll-behavior: smooth;
 }
 
+html.app-focus-mode,
+body.app-focus-mode {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -100,6 +106,13 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+}
+
+.tool-card__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
 }
 
 .tool-card__eyebrow {
@@ -319,5 +332,9 @@ button:disabled {
   .tool-card__topline {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .tool-card__header-actions {
+    justify-content: flex-start;
   }
 }

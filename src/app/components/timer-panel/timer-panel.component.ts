@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { FullscreenToolViewService } from '../../services/fullscreen-tool-view.service';
 import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
 import { TimerStateService } from '../../services/timer-state.service';
+import { ToolPanelViewMode } from '../../shared/tool.types';
 
 @Component({
   selector: 'app-timer-panel',
@@ -10,8 +12,10 @@ import { TimerStateService } from '../../services/timer-state.service';
 })
 export class TimerPanelComponent {
   private readonly timerStateService = inject(TimerStateService);
+  private readonly fullscreenToolViewService = inject(FullscreenToolViewService);
   private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
+  readonly viewMode = input<ToolPanelViewMode>('dashboard');
   protected readonly floatingMessage = signal<string | null>(null);
   protected readonly isRunning = this.timerStateService.isRunning;
   protected readonly elapsedMs = this.timerStateService.elapsedMs;
@@ -34,6 +38,10 @@ export class TimerPanelComponent {
 
   protected toggleRunning(): void {
     this.timerStateService.toggleRunning();
+  }
+
+  protected openFullscreenMode(): void {
+    void this.fullscreenToolViewService.openTool('timer');
   }
 
   protected openFloatingWindow(): void {

@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import {
   CountdownPreset,
   CountdownStateService,
 } from '../../services/countdown-state.service';
+import { FullscreenToolViewService } from '../../services/fullscreen-tool-view.service';
 import { FloatingToolWindowService } from '../../services/floating-tool-window.service';
+import { ToolPanelViewMode } from '../../shared/tool.types';
 
 @Component({
   selector: 'app-countdown-panel',
@@ -13,8 +15,10 @@ import { FloatingToolWindowService } from '../../services/floating-tool-window.s
 })
 export class CountdownPanelComponent {
   private readonly countdownStateService = inject(CountdownStateService);
+  private readonly fullscreenToolViewService = inject(FullscreenToolViewService);
   private readonly floatingToolWindowService = inject(FloatingToolWindowService);
 
+  readonly viewMode = input<ToolPanelViewMode>('dashboard');
   protected readonly floatingMessage = signal<string | null>(null);
   protected readonly presets = this.countdownStateService.presets;
   protected readonly hours = this.countdownStateService.hours;
@@ -59,6 +63,10 @@ export class CountdownPanelComponent {
 
   protected toggleRunning(): void {
     this.countdownStateService.toggleRunning();
+  }
+
+  protected openFullscreenMode(): void {
+    void this.fullscreenToolViewService.openTool('countdown');
   }
 
   protected openFloatingWindow(): void {
