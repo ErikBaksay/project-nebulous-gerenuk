@@ -36,6 +36,18 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+## GitHub Pages
+
+This repository is configured to deploy to GitHub Pages through GitHub Actions using the workflow in `.github/workflows/deploy-pages.yml`.
+
+For a local Pages-style production build, run:
+
+```bash
+npm run build:pages -- --base-href /project-nebulous-gerenuk/
+```
+
+The GitHub Actions workflow derives the correct base path automatically from the repository Pages configuration and publishes the built browser output from `dist/project-nebulous-gerenuk/browser`.
+
 ## Running unit tests
 
 To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
