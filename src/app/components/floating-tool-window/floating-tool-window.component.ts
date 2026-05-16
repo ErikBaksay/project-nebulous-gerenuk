@@ -21,13 +21,14 @@ export class FloatingToolWindowComponent {
   readonly toolId = input.required<ToolId>();
   protected readonly tool = computed(() => TOOL_WINDOW_CONFIG[this.toolId()]);
   protected readonly title = computed(() => FLOATING_TOOL_TITLES[this.toolId()]);
+  protected readonly subtitle = computed(() => FLOATING_TOOL_SUBTITLES[this.toolId()]);
 
   protected readonly timerElapsedMs = this.timerStateService.elapsedMs;
   protected readonly timerIsRunning = this.timerStateService.isRunning;
   protected readonly timerDisplayTime = this.timerStateService.displayTime;
   protected readonly timerState = this.timerStateService.timerState;
   protected readonly timerMeta = computed(() =>
-    this.timerElapsedMs() === 0 ? 'Ready whenever you are.' : 'Elapsed time',
+    this.timerElapsedMs() === 0 ? 'Ready for first pulse.' : 'Elapsed on stage',
   );
 
   protected readonly countdownConfiguredDurationMs = this.countdownStateService.configuredDurationMs;
@@ -37,10 +38,10 @@ export class FloatingToolWindowComponent {
   protected readonly countdownState = this.countdownStateService.countdownState;
   protected readonly countdownMeta = computed(() => {
     if (this.countdownCompleted()) {
-      return 'Countdown finished.';
+      return 'Final bell reached.';
     }
 
-    return 'Remaining time';
+    return 'Remaining on stage';
   });
 
   protected readonly counterValue = this.counterStateService.count;
@@ -79,7 +80,13 @@ export class FloatingToolWindowComponent {
 }
 
 const FLOATING_TOOL_TITLES: Record<ToolId, string> = {
-  timer: 'Keep the stopwatch nearby.',
-  countdown: 'Hold the finish line in view.',
-  counter: 'Keep the tally off to the side.',
+  timer: 'Your timer, always within reach.',
+  countdown: 'Keep the finish line in view.',
+  counter: 'Keep the tally near the stage.',
+};
+
+const FLOATING_TOOL_SUBTITLES: Record<ToolId, string> = {
+  timer: 'Precise timing, right at your fingertips.',
+  countdown: 'Set the target and watch the remaining time.',
+  counter: 'Control stays synced with the main atelier.',
 };

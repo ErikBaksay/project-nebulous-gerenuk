@@ -3,11 +3,11 @@
     <div class="floating-tool-card__intro">
       <div class="floating-tool-card__topline">
         <p class="tool-card__eyebrow">{{ tool().label }}</p>
-        <span class="floating-tool-card__badge">On top</span>
+        <span class="floating-tool-card__badge">Floating</span>
       </div>
 
       <h2 class="floating-tool-card__title">{{ title() }}</h2>
-      <p class="floating-tool-card__caption">All setup stays on the dashboard.</p>
+      <p class="floating-tool-card__caption">{{ subtitle() }}</p>
     </div>
 
     <button type="button" class="tool-ghost-button floating-tool-card__close" (click)="closeWindow()">
@@ -18,9 +18,7 @@
   @switch (toolId()) {
     @case ('timer') {
       <div class="chip-row floating-tool-card__status-row">
-        <span class="status-chip" [class.status-chip--running]="timerIsRunning()">
-          {{ timerState() }}
-        </span>
+        <span class="status-chip" [class.status-chip--running]="timerIsRunning()">{{ timerState() }}</span>
       </div>
 
       <div class="tool-display floating-tool-card__display" aria-live="polite">

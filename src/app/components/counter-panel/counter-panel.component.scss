@@ -6,48 +6,33 @@
 .adjustment-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.62rem;
 }
 
 .adjustment-button {
-  min-height: 3.15rem;
-  padding: 0.95rem;
-  border: 1px solid rgba(138, 93, 56, 0.14);
-  border-radius: 1.1rem;
-  background: rgba(255, 247, 238, 0.84);
-  color: var(--accent-warm);
-  font-size: 1rem;
+  min-height: 2.95rem;
+  padding: 0.72rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  transition:
-    transform 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease;
-}
-
-.adjustment-button:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 242, 228, 0.96);
-  border-color: rgba(138, 93, 56, 0.26);
+  letter-spacing: 0.03em;
 }
 
 .adjustment-button--positive {
-  color: var(--accent);
-  border-color: rgba(47, 103, 88, 0.14);
-  background: rgba(236, 244, 241, 0.92);
+  color: color-mix(in oklab, var(--oxide-strong) 74%, var(--ink-stage-1));
+  background: color-mix(in oklab, var(--accent-soft) 56%, var(--surface-stage-0));
+  border-color: color-mix(in oklab, var(--oxide-soft) 42%, var(--line-stage-soft));
 }
 
-.adjustment-button--positive:hover {
-  border-color: rgba(47, 103, 88, 0.28);
-  background: rgba(230, 242, 237, 1);
+.adjustment-button--positive:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--oxide-strong) 48%, var(--line-stage-strong));
 }
 
 .adjustment-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 70%, white);
+  outline: 2px solid color-mix(in oklab, var(--oxide-strong) 72%, #f6ddc1);
   outline-offset: 2px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .adjustment-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -1,33 +1,64 @@
-<div class="page-shell">
-  <main class="dashboard">
-    <section class="hero-card">
-      <p class="hero-card__eyebrow">Private utility workspace</p>
-      <div class="hero-card__content">
-        <div class="hero-card__copy">
-          <h1>{{ projectName() }}</h1>
-          <p>
-            A quiet first build for your future tools hub. Counter, timer, and countdown are ready
-            now, with the same calm editorial feel carried across the whole page, into compact
-            floating monitors, and into fullscreen focus mode.
-          </p>
-          <p class="hero-card__note">{{ workspaceNote() }}</p>
-        </div>
+<div class="app-root">
+  <header class="top-strip">
+    <div class="brand-block">
+      <p class="eyebrow">Cinematic utility atelier</p>
+      <h1>{{ projectName() }}</h1>
+      <p class="subtitle">{{ workspaceNote() }}</p>
+    </div>
 
-        <aside class="hero-card__aside">
-          <p class="hero-card__summary">{{ heroSummary() }}</p>
-          <div class="hero-card__chips">
-            @for (tool of toolNames(); track tool) {
-              <span>{{ tool }}</span>
-            }
-          </div>
-        </aside>
-      </div>
+    <div class="strip-actions" role="status" aria-live="polite">
+      <p class="stage-label">Stage · {{ activeToolLabel() }}</p>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="pane rail-pane desktop-rail" aria-label="Tool selector">
+      <section class="tool-rail">
+        <header class="rail-head">
+          <p class="eyebrow">Navigator</p>
+          <h2>Instruments</h2>
+        </header>
+
+        <div class="tool-list" role="tablist" aria-label="Available tools">
+          @for (tool of tools; track tool.id) {
+            <button
+              type="button"
+              class="tool-chip"
+              role="tab"
+              [class.active]="isActive(tool.id)"
+              [attr.aria-selected]="isActive(tool.id)"
+              [attr.aria-controls]="'tool-stage-' + tool.id"
+              [id]="'tool-tab-' + tool.id"
+              (click)="setActiveTool(tool.id)"
+            >
+              <span class="tool-chip__main">{{ tool.label }}</span>
+              <span class="tool-chip__meta">{{ toolSummary(tool.id) }}</span>
+            </button>
+          }
+        </div>
+      </section>
     </section>
 
-    <section class="tool-grid" aria-label="Utility tools">
-      <app-timer-panel />
-      <app-countdown-panel />
-      <app-counter-panel class="tool-grid__wide" />
+    <section class="pane stage-pane" [attr.id]="'tool-stage-' + activeToolId()" role="tabpanel" [attr.aria-labelledby]="'tool-tab-' + activeToolId()">
+      @switch (activeToolId()) {
+        @case ('timer') {
+          <app-timer-panel viewMode="dashboard" />
+        }
+        @case ('countdown') {
+          <app-countdown-panel viewMode="dashboard" />
+        }
+        @case ('counter') {
+          <app-counter-panel viewMode="dashboard" />
+        }
+      }
     </section>
   </main>
+
+  <nav class="mobile-nav dashboard-mobile-nav" aria-label="Tool stage navigation">
+    @for (tool of tools; track tool.id) {
+      <button type="button" [class.active]="isActive(tool.id)" (click)="setActiveTool(tool.id)">
+        {{ tool.label }}
+      </button>
+    }
+  </nav>
 </div>

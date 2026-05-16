@@ -23,7 +23,7 @@ export class FullscreenToolOverlayComponent {
     return activeToolId === null ? null : TOOL_WINDOW_CONFIG[activeToolId];
   });
   protected readonly modeLabel = computed(() =>
-    this.isFullscreen() ? 'Fullscreen Focus' : 'Focused View',
+    this.isFullscreen() ? 'Fullscreen Stage' : 'Focused Stage',
   );
 
   protected close(): void {
